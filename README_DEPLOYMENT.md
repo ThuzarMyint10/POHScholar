@@ -1,9 +1,10 @@
 # POH Scholarships Scheme — Laravel Edition — Deployment Guide
 
-This is the Laravel 11 rewrite of the POH Scholarships Scheme site: the
+This is the Laravel 12 application for the POH Scholarships Scheme: the
 public marketing site, the student application portal, and the staff
 admin dashboard, all in one application backed by a single MySQL
-database.
+database. Dependencies support PHP 8.4 and include the maintained
+`sineld/voyager` v2.0 package for compatible Voyager functionality.
 
 **Important — read this first:** this application was written in a
 sandboxed environment with no access to Packagist or GitHub, so
@@ -18,13 +19,14 @@ catch.
 
 ## 1. What you need
 
-- **PHP 8.2 or newer**, with these extensions enabled (all standard on
+- **PHP 8.4 or newer**, with these extensions enabled (all standard on
   most Windows PHP builds): `pdo_mysql`, `mbstring`, `fileinfo`, `openssl`,
   `tokenizer`, `xml`, `ctype`, `curl`, `gd` (used by the PDF export
   library for rendering the applicant photo/logo).
 - **MySQL 5.7+ / MariaDB 10.3+** (or later — anything current).
-- **Composer** (https://getcomposer.org) — used once, on the machine
-  that has internet access, to download Laravel and its dependencies.
+- **Composer 2.10 or newer** — used on the machine that has internet
+  access, to download Laravel and its dependencies.
+- **Node.js 20.12 or newer** and npm for rebuilding frontend assets.
 - **IIS** with the **URL Rewrite** module
   (https://www.iis.net/downloads/microsoft/url-rewrite) and PHP wired up
   via FastCGI (the "PHP Manager for IIS" extension is the easiest way to
@@ -217,7 +219,22 @@ Once the above is done, visit the site and check, in order:
 
 ---
 
-## 10. What changed structurally vs. the original PHP app
+## 10. Google reCAPTCHA configuration
+
+The application supports reCAPTCHA v2 checkbox/image challenges and reCAPTCHA v3 score responses. Set `RECAPTCHA_MODE=v2` for the visible “I'm not a robot” checkbox. For a v2 key, configure the production hostname in the Google reCAPTCHA console.
+
+For v3 mode, configure `RECAPTCHA_SITE_KEY` and `RECAPTCHA_SECRET_KEY` with a
+matching key pair in `.env`, set `RECAPTCHA_MODE=v3`, then run
+`php artisan config:clear`. For v3,
+`RECAPTCHA_SCORE_THRESHOLD` defaults to `0.5`. `RECAPTCHA_EXPECTED_HOSTNAME`
+can optionally restrict verification to one hostname; leave it empty if the
+deployment uses multiple accepted hostnames.
+
+Related files: `app/Rules/Recaptcha.php`, `config/services.php`, `.env.example`,
+and the login/register Blade views under `resources/views/admin/auth/` and
+`resources/views/student/auth/`.
+
+## 11. What changed structurally vs. the original PHP app
 
 This is a full rewrite, not a partial port — every public page, every
 student-portal page, and every admin page has a Laravel equivalent with

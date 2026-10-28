@@ -44,6 +44,12 @@ return [
     'recaptcha' => [
         'site_key' => env('RECAPTCHA_SITE_KEY'),
         'secret_key' => env('RECAPTCHA_SECRET_KEY'),
+        'mode' => env('RECAPTCHA_MODE', 'v3'),
+        'score_threshold' => (float) env('RECAPTCHA_SCORE_THRESHOLD', 0.5),
+        'expected_hostname' => env('RECAPTCHA_EXPECTED_HOSTNAME'),
+        'verify_url' => env('RECAPTCHA_VERIFY_URL', 'https://www.google.com/recaptcha/api/siteverify'),
+        'timeout' => (int) env('RECAPTCHA_TIMEOUT', 10),
+        'ca_bundle' => env('RECAPTCHA_CA_BUNDLE', storage_path('certs/cacert.pem')),
     ],
 
     'anthropic' => [

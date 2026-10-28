@@ -2,65 +2,78 @@
 
 namespace App\Rules;
 
-use Illuminate\Contracts\Validation\Rule;
+use Closure;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class Recaptcha implements Rule
+class Recaptcha implements ValidationRule
 {
-    /**
-     * Minimum trust score to accept (0.0 = bot, 1.0 = human).
-     * Google recommends starting around 0.5 and tuning from real traffic.
-     */
-    protected float $scoreThreshold = 0.5;
-
-    protected string $errorMessage = 'Please confirm you are not a robot by completing the reCAPTCHA.';
-
-    public function passes($attribute, $value): bool
+    public function validate(string $attribute, mixed $value, Closure $fail): void
     {
         if (blank($value)) {
-            $this->errorMessage = 'Please complete the reCAPTCHA before submitting.';
+            $fail('Please complete the reCAPTCHA before submitting.');
+            return;
+        }
 
-            return false;
+        $secret = config('services.recaptcha.secret_key');
+        if (blank($secret)) {
+            Log::error('reCAPTCHA secret key is not configured.');
+            $fail('reCAPTCHA is temporarily unavailable. Please try again later.');
+            return;
         }
 
         try {
-            $response = Http::asForm()->post('https://www.google.com/recaptcha/api/siteverify', [
-                'secret' => config('services.recaptcha.secret_key'),
-                'response' => $value,
-                'remoteip' => request()->ip(),
-            ]);
+            $http = Http::asForm()
+                ->timeout((int) config('services.recaptcha.timeout', 10));
+
+            $caBundle = config('services.recaptcha.ca_bundle');
+            if (filled($caBundle) && is_file($caBundle)) {
+                $http = $http->withOptions(['verify' => $caBundle]);
+            }
+
+            $response = $http->post((string) config('services.recaptcha.verify_url', 'https://www.google.com/recaptcha/api/siteverify'), [
+                    'secret' => $secret,
+                    'response' => $value,
+                    'remoteip' => request()->ip(),
+                ]);
+
+            if (! $response->successful()) {
+                Log::warning('reCAPTCHA verification returned HTTP '.$response->status());
+                $fail('We could not verify the reCAPTCHA right now. Please try again in a moment.');
+                return;
+            }
 
             $json = $response->json();
-
             if (! ($json['success'] ?? false)) {
-                $this->errorMessage = 'reCAPTCHA verification failed. Please try again.';
-
-                return false;
+                Log::warning('reCAPTCHA verification failed.', ['error_codes' => $json['error-codes'] ?? []]);
+                $fail('reCAPTCHA verification failed. Please try again.');
+                return;
             }
 
-            $score = $json['score'] ?? 0;
-
-            if ($score < $this->scoreThreshold) {
-                $this->errorMessage = 'This submission looks automated and was blocked. If you believe this is a mistake, please contact our office.';
-
-                return false;
+            $expectedHostname = config('services.recaptcha.expected_hostname');
+            if (filled($expectedHostname) && isset($json['hostname']) && $json['hostname'] !== $expectedHostname) {
+                Log::warning('reCAPTCHA hostname mismatch.', ['hostname' => $json['hostname']]);
+                $fail('reCAPTCHA verification failed. Please use this form on the configured website.');
+                return;
             }
 
-            return true;
+            if (config('services.recaptcha.mode') === 'v3' && array_key_exists('score', $json)) {
+                $threshold = (float) config('services.recaptcha.score_threshold', 0.5);
+                if ((float) $json['score'] < $threshold) {
+                    $fail('This submission looks automated and was blocked. If you believe this is a mistake, please contact our office.');
+                    return;
+                }
+
+                $action = $json['action'] ?? null;
+                if ($action !== null && ! in_array($action, ['login', 'register'], true)) {
+                    Log::warning('reCAPTCHA action mismatch.', ['action' => $action]);
+                    $fail('reCAPTCHA verification failed. Please refresh the page and try again.');
+                }
+            }
         } catch (\Throwable $e) {
-            // If Google's verification endpoint is unreachable, fail closed
-            // (reject the submission) rather than silently letting it through.
             Log::warning('reCAPTCHA verification request failed: '.$e->getMessage());
-
-            $this->errorMessage = 'We could not verify the reCAPTCHA right now. Please try again in a moment.';
-
-            return false;
+            $fail('We could not verify the reCAPTCHA right now. Please try again in a moment.');
         }
-    }
-
-    public function message(): string
-    {
-        return $this->errorMessage;
     }
 }

@@ -9,7 +9,11 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
+@if (config('services.recaptcha.mode') === 'v2')
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+@else
 <script src="https://www.google.com/recaptcha/api.js?render={{ config('services.recaptcha.site_key') }}"></script>
+@endif
 </head>
 <body>
 <div class="login-wrap">
@@ -51,12 +55,19 @@
         <label for="password_confirmation">Confirm Password</label>
         <input type="password" id="password_confirmation" name="password_confirmation" required autocomplete="new-password">
       </div>
+      @if (config('services.recaptcha.mode') === 'v2')
+      <div class="form-group recaptcha-container">
+        <div class="g-recaptcha" data-sitekey="{{ config('services.recaptcha.site_key') }}"></div>
+      </div>
+      @else
       <div class="form-group">
         <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
       </div>
+      @endif
       <button type="submit" class="btn btn--block">Create Account</button>
     </form>
     <script>
+      @if (config('services.recaptcha.mode') !== 'v2')
       document.querySelector('form[action="{{ route('student.register.store') }}"]').addEventListener('submit', function (e) {
         e.preventDefault();
         var form = this;
@@ -67,9 +78,15 @@
           });
         });
       });
+      @endif
     </script>
     <p style="margin-top:18px;">Already registered? <a href="{{ route('student.login') }}">Log in</a></p>
     <p style="margin-top:10px;"><a href="{{ route('home') }}">&larr; Back to Public Site</a></p>
+    <p class="recaptcha-attribution">
+      This site is protected by reCAPTCHA and the Google
+      <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and
+      <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.
+    </p>
   </div>
 </div>
 </body>
