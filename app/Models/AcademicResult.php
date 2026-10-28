@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class AcademicResult extends Model
+{
+    public $timestamps = false;
+
+    protected $guarded = ['id'];
+
+    protected function casts(): array
+    {
+        return [
+            'due_date' => 'date',
+            'submitted_at' => 'datetime',
+            'reminder_sent_at' => 'datetime',
+            'created_at' => 'datetime',
+        ];
+    }
+
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
+    }
+}
