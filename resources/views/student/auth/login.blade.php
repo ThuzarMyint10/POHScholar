@@ -8,7 +8,25 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-<link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/admin.css') }}?v=20261028recaptcha">
+<style>
+  .grecaptcha-badge,
+  iframe[src*="google.com/recaptcha/api2/bframe"],
+  body > div.grecaptcha-badge {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+</style>
+<script>
+  window.addEventListener('load', function () {
+    document.querySelectorAll('.grecaptcha-badge').forEach(function (badge) {
+      badge.style.setProperty('display', 'none', 'important');
+      badge.style.setProperty('visibility', 'hidden', 'important');
+    });
+  });
+</script>
 @if (config('services.recaptcha.mode') === 'v2')
 <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 @else

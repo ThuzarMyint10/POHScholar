@@ -58,9 +58,19 @@ class Recaptcha implements ValidationRule
                 return;
             }
 
-            if (config('services.recaptcha.mode') === 'v3' && array_key_exists('score', $json)) {
+            if (config('services.recaptcha.mode') === 'v2') {
+                Log::info('reCAPTCHA v2 verification passed.', [
+                    'hostname' => $json['hostname'] ?? null,
+                    'ip' => request()->ip(),
+                ]);
+                return;
+            }
+
+            if (array_key_exists('score', $json)) {
                 $threshold = (float) config('services.recaptcha.score_threshold', 0.5);
-                if ((float) $json['score'] < $threshold) {
+                $score = (float) $json['score'];
+                if ($score < $threshold) {
+                    Log::warning('reCAPTCHA v3 score rejected.', ['score' => $score, 'threshold' => $threshold, 'ip' => request()->ip()]);
                     $fail('This submission looks automated and was blocked. If you believe this is a mistake, please contact our office.');
                     return;
                 }
@@ -69,7 +79,21 @@ class Recaptcha implements ValidationRule
                 if ($action !== null && ! in_array($action, ['login', 'register'], true)) {
                     Log::warning('reCAPTCHA action mismatch.', ['action' => $action]);
                     $fail('reCAPTCHA verification failed. Please refresh the page and try again.');
+                    return;
                 }
+
+                Log::info('reCAPTCHA v3 verification passed.', [
+                    'score' => $score,
+                    'threshold' => $threshold,
+                    'action' => $action,
+                    'hostname' => $json['hostname'] ?? null,
+                    'ip' => request()->ip(),
+                ]);
+            } else {
+                Log::info('reCAPTCHA verification passed without a v3 score.', [
+                    'hostname' => $json['hostname'] ?? null,
+                    'ip' => request()->ip(),
+                ]);
             }
         } catch (\Throwable $e) {
             Log::warning('reCAPTCHA verification request failed: '.$e->getMessage());
