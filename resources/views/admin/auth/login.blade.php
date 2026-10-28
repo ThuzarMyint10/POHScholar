@@ -50,7 +50,7 @@
       <div class="alert alert--error">{{ $errors->first() }}</div>
     @endif
 
-    <form method="post" action="{{ route('admin.login.store') }}" style="text-align:left;">
+    <form method="post" action="{{ route('admin.login.store') }}" id="admin-login-form" style="text-align:left;">
       @csrf
       <div class="form-group required">
         <label for="username">Username</label>
@@ -69,20 +69,56 @@
         <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
       </div>
       @endif
+      @if (config('services.recaptcha.mode') !== 'v2')
+      <p id="recaptcha-status" class="hint" role="status" aria-live="polite" style="margin:0 0 10px;">
+        Automatic security verification will run when you submit.
+      </p>
+      @endif
       <button type="submit" class="btn btn--block">Log In</button>
     </form>
     <script>
       @if (config('services.recaptcha.mode') !== 'v2')
-      document.querySelector('form[action="{{ route('admin.login.store') }}"]').addEventListener('submit', function (e) {
-        e.preventDefault();
-        var form = this;
-        grecaptcha.ready(function () {
-          grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', { action: 'login' }).then(function (token) {
-            document.getElementById('g-recaptcha-response').value = token;
-            form.submit();
+      (function () {
+        var form = document.getElementById('admin-login-form');
+        var status = document.getElementById('recaptcha-status');
+        var submitButton = form.querySelector('button[type="submit"]');
+        var submitting = false;
+
+        form.addEventListener('submit', function (e) {
+          if (submitting) return;
+          e.preventDefault();
+          submitting = true;
+          submitButton.disabled = true;
+          status.textContent = 'Running automatic security verification…';
+          document.getElementById('g-recaptcha-response').value = '';
+
+          if (typeof grecaptcha === 'undefined') {
+            status.textContent = 'Security verification could not start. Please refresh the page and try again.';
+            submitButton.disabled = false;
+            submitting = false;
+            return;
+          }
+
+          grecaptcha.ready(function () {
+            grecaptcha.execute('{{ config('services.recaptcha.site_key') }}', { action: 'login' }).then(function (token) {
+              if (!token) {
+                status.textContent = 'Google did not return a security token. Please try again.';
+                submitButton.disabled = false;
+                submitting = false;
+                return;
+              }
+
+              document.getElementById('g-recaptcha-response').value = token;
+              status.textContent = 'Browser security verification passed. Submitting…';
+              HTMLFormElement.prototype.submit.call(form);
+            }).catch(function () {
+              status.textContent = 'Security verification failed in the browser. Please try again.';
+              submitButton.disabled = false;
+              submitting = false;
+            });
           });
         });
-      });
+      })();
       @endif
     </script>
     <p style="margin-top:20px;"><a href="{{ route('home') }}">&larr; Back to Public Site</a></p>
