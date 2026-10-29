@@ -2,12 +2,11 @@
 
 return [
 
-    // No single default guard - every route explicitly picks 'admin' or
-    // 'student' (see routes/web.php), so this is only a fallback for
-    // anything that doesn't specify one.
+    // Use the admin guard as the application default for packages such as Voyager.
+    // Student and admin routes that need an explicit guard continue to select it themselves.
     'defaults' => [
-        'guard' => 'student',
-        'passwords' => 'students',
+        'guard' => 'admin',
+        'passwords' => 'admin_users',
     ],
 
     'guards' => [
