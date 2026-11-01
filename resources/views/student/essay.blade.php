@@ -13,7 +13,7 @@
 @endif
 
 <div class="form-card">
-  <form method="post" action="{{ route('student.essay.update') }}" novalidate>
+  <form method="post" action="{{ route('student.essay.update') }}" ">
     @csrf
     @method('PUT')
     <div class="form-group required">

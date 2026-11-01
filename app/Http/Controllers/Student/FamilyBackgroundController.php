@@ -67,6 +67,24 @@ class FamilyBackgroundController extends Controller
             'emp_staff_reporting' => 'staff_reporting',
         ]);
 
+        if (count($familyMembers) < 2) {
+            return back()->withInput()->withErrors(['family_members' => 'Please enter particulars for both your father/parent and mother/parent family members.']);
+        }
+        foreach (array_slice($familyMembers, 0, 2) as $index => $member) {
+            foreach (['name', 'relationship', 'date_of_birth', 'citizenship', 'marital_status', 'staying_with_applicant', 'occupation', 'employer_or_school', 'monthly_income'] as $field) {
+                if (! filled($member[$field] ?? null)) {
+                    return back()->withInput()->withErrors(['family_members' => 'Please complete every field for both required family member rows (row '.($index + 1).').']);
+                }
+            }
+        }
+        foreach ($employmentRecords as $record) {
+            foreach ($record as $value) {
+                if (! filled($value)) {
+                    return back()->withInput()->withErrors(['employment_records' => 'If an employment row is entered, complete every employment field or remove the row.']);
+                }
+            }
+        }
+
         $student->forceFill([
             'family_members' => $familyMembers,
             'employment_records' => $employmentRecords,

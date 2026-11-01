@@ -104,6 +104,9 @@ class Student extends Model implements AuthenticatableContract
             && filled($this->phone)
             && filled($this->school_or_institute)
             && filled($this->guardian_name)
+            && filled($this->guardian_occupation)
+            && filled($this->household_income_band)
+            && filled($this->undergraduate_course)
             && filled($this->photo);
     }
 
@@ -180,6 +183,16 @@ class Student extends Model implements AuthenticatableContract
             }
         }
 
+        if ($this->prev_scholarship_flag && ! filled($this->prev_scholarship_details)) {
+            return false;
+        }
+        if ($this->health_condition_flag && ! filled($this->health_condition_details)) {
+            return false;
+        }
+        if ($this->legal_charge_flag && ! filled($this->legal_charge_details)) {
+            return false;
+        }
+
         return true;
     }
 
@@ -198,8 +211,9 @@ class Student extends Model implements AuthenticatableContract
         if (! $this->activitiesComplete()) {
             $missing[] = 'Activities & Experience';
         }
-        if (! filled(trim((string) $this->essay))) {
-            $missing[] = 'Essay';
+        $essayWordCount = trim((string) $this->essay) === '' ? 0 : str_word_count(trim((string) $this->essay));
+        if ($essayWordCount < 100) {
+            $missing[] = 'Essay (at least 100 words)';
         }
         if (! $this->documents()->exists()) {
             $missing[] = 'Certificates / Documents';

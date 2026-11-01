@@ -10,7 +10,7 @@
 @endif
 
 <div class="form-card">
-  <form method="post" action="{{ route('student.activities.update') }}" novalidate>
+  <form method="post" action="{{ route('student.activities.update') }}" ">
     @csrf
     @method('PUT')
     <fieldset {{ $locked ? 'disabled' : '' }}>
@@ -108,9 +108,9 @@
     }
   });
   function threeColRow(prefix) {
-    return '<td><input type="text" name="' + prefix + '_period[]"></td>' +
-      '<td><input type="text" name="' + prefix + '_detail[]"></td>' +
-      '<td><input type="text" name="' + prefix + '_level[]"></td>' +
+    return '<td><input type="text" name="' + prefix + '_period[]" required></td>' +
+      '<td><input type="text" name="' + prefix + '_detail[]" required></td>' +
+      '<td><input type="text" name="' + prefix + '_level[]" required></td>' +
       '<td><button type="button" class="btn btn--sm btn--outline row-remove">&times;</button></td>';
   }
   var addSA = document.getElementById('addSchoolActivity');

@@ -54,8 +54,39 @@ class AdditionalInfoController extends Controller
         ]);
         $referees = array_slice($referees, 0, 2);
 
-        if ($declarationAgreed && $declarationSignature === '') {
-            return back()->withInput()->withErrors(['declaration_signature' => 'Please type your name as your signature to confirm the declaration.']);
+        if ($prevScholarshipFlag === '' || $healthConditionFlag === '' || $legalChargeFlag === '') {
+            return back()->withInput()->withErrors(['other_information' => 'Please answer all three Yes/No questions.']);
+        }
+        if (! in_array($prevScholarshipFlag, ['0', '1'], true) || ! in_array($healthConditionFlag, ['0', '1'], true) || ! in_array($legalChargeFlag, ['0', '1'], true)) {
+            return back()->withInput()->withErrors(['other_information' => 'Please select a valid Yes/No answer for each question.']);
+        }
+        if ($prevScholarshipFlag === '1' && ! filled(trim((string) $request->input('prev_scholarship_details', '')))) {
+            return back()->withInput()->withErrors(['prev_scholarship_details' => 'Please provide details for your previous scholarship application.']);
+        }
+        if ($healthConditionFlag === '1' && ! filled(trim((string) $request->input('health_condition_details', '')))) {
+            return back()->withInput()->withErrors(['health_condition_details' => 'Please provide details of your physical impairment or disease.']);
+        }
+        if ($legalChargeFlag === '1' && ! filled(trim((string) $request->input('legal_charge_details', '')))) {
+            return back()->withInput()->withErrors(['legal_charge_details' => 'Please provide details of the court charge.']);
+        }
+        if (count($referees) < 2) {
+            return back()->withInput()->withErrors(['referees' => 'Please enter details for both character referees.']);
+        }
+        foreach (array_slice($referees, 0, 2) as $index => $referee) {
+            foreach (['name', 'address', 'occupation', 'telephone', 'years_known'] as $field) {
+                if (! filled($referee[$field] ?? null)) {
+                    return back()->withInput()->withErrors(['referees' => 'Please complete every field for referee '.($index + 1).'.']);
+                }
+            }
+        }
+        if ($declarationSignature === '') {
+            return back()->withInput()->withErrors(['declaration_signature' => 'Please type your full name as your signature.']);
+        }
+        if ($declarationDate === '') {
+            return back()->withInput()->withErrors(['declaration_date' => 'Please select the declaration date.']);
+        }
+        if (! $declarationAgreed) {
+            return back()->withInput()->withErrors(['declaration_agreed' => 'You must agree to the declaration before saving this section.']);
         }
 
         $toFlag = fn ($v) => $v === '' ? null : ($v === '1' ? 1 : 0);

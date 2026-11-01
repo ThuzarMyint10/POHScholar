@@ -41,21 +41,21 @@ class AcademicRecordController extends Controller
         }
 
         $data = $request->validate([
-            'secondary_school' => ['nullable', 'string', 'max:200'],
-            'al_college' => ['nullable', 'string', 'max:200'],
-            'ol_grade_a' => ['nullable', 'integer', 'min:0'],
-            'ol_grade_b' => ['nullable', 'integer', 'min:0'],
-            'ol_grade_c' => ['nullable', 'integer', 'min:0'],
-            'ol_grade_s' => ['nullable', 'integer', 'min:0'],
-            'ol_grade_wf' => ['nullable', 'integer', 'min:0'],
-            'ol_national_ranking' => ['nullable', 'string', 'max:100'],
-            'al_grade_a' => ['nullable', 'integer', 'min:0'],
-            'al_grade_b' => ['nullable', 'integer', 'min:0'],
-            'al_grade_c' => ['nullable', 'integer', 'min:0'],
-            'al_grade_s' => ['nullable', 'integer', 'min:0'],
-            'al_grade_wf' => ['nullable', 'integer', 'min:0'],
-            'al_zscore' => ['nullable', 'string', 'max:30'],
-            'al_national_ranking' => ['nullable', 'string', 'max:100'],
+            'secondary_school' => ['required', 'string', 'max:200'],
+            'al_college' => ['required', 'string', 'max:200'],
+            'ol_grade_a' => ['required', 'integer', 'min:0'],
+            'ol_grade_b' => ['required', 'integer', 'min:0'],
+            'ol_grade_c' => ['required', 'integer', 'min:0'],
+            'ol_grade_s' => ['required', 'integer', 'min:0'],
+            'ol_grade_wf' => ['required', 'integer', 'min:0'],
+            'ol_national_ranking' => ['required', 'string', 'max:100'],
+            'al_grade_a' => ['required', 'integer', 'min:0'],
+            'al_grade_b' => ['required', 'integer', 'min:0'],
+            'al_grade_c' => ['required', 'integer', 'min:0'],
+            'al_grade_s' => ['required', 'integer', 'min:0'],
+            'al_grade_wf' => ['required', 'integer', 'min:0'],
+            'al_zscore' => ['required', 'string', 'max:30'],
+            'al_national_ranking' => ['required', 'string', 'max:100'],
         ]);
 
         $academicAwards = RowParser::fromRequest($request, [

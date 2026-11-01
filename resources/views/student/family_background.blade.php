@@ -10,7 +10,7 @@
 @endif
 
 <div class="form-card">
-  <form method="post" action="{{ route('student.family_background.update') }}" novalidate>
+  <form method="post" action="{{ route('student.family_background.update') }}" ">
     @csrf
     @method('PUT')
     <fieldset {{ $locked ? 'disabled' : '' }}>
@@ -30,21 +30,21 @@
           <tbody>
             @foreach ($familyMembers as $row)
               <tr>
-                <td><input type="text" name="fam_name[]" value="{{ $row['name'] ?? '' }}" style="min-width:200px;" {{ $locked ? 'readonly' : '' }}></td>
-                <td><input type="text" name="fam_relationship[]" value="{{ $row['relationship'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
-                <td><input type="date" name="fam_dob[]" value="{{ $row['date_of_birth'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
-                <td><input type="text" name="fam_citizenship[]" value="{{ $row['citizenship'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
-                <td><input type="text" name="fam_marital_status[]" value="{{ $row['marital_status'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="fam_name[]" value="{{ $row['name'] ?? '' }}" style="min-width:200px;" {{ $loop->index < 2 ? 'required' : '' }} {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="fam_relationship[]" value="{{ $row['relationship'] ?? '' }}" {{ $loop->index < 2 ? 'required' : '' }} {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="date" name="fam_dob[]" value="{{ $row['date_of_birth'] ?? '' }}" {{ $loop->index < 2 ? 'required' : '' }} {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="fam_citizenship[]" value="{{ $row['citizenship'] ?? '' }}" {{ $loop->index < 2 ? 'required' : '' }} {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="fam_marital_status[]" value="{{ $row['marital_status'] ?? '' }}" {{ $loop->index < 2 ? 'required' : '' }} {{ $locked ? 'readonly' : '' }}></td>
                 <td>
-                  <select name="fam_staying_with[]" {{ $locked ? 'disabled' : '' }}>
+                  <select name="fam_staying_with[]" {{ $loop->index < 2 ? 'required' : '' }} {{ $locked ? 'disabled' : '' }}>
                     <option value="">&ndash;</option>
                     <option value="Yes" {{ ($row['staying_with_applicant'] ?? '') === 'Yes' ? 'selected' : '' }}>Yes</option>
                     <option value="No" {{ ($row['staying_with_applicant'] ?? '') === 'No' ? 'selected' : '' }}>No</option>
                   </select>
                 </td>
-                <td><input type="text" name="fam_occupation[]" value="{{ $row['occupation'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
-                <td><input type="text" name="fam_employer_or_school[]" value="{{ $row['employer_or_school'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
-                <td><input type="text" name="fam_income[]" value="{{ $row['monthly_income'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="fam_occupation[]" value="{{ $row['occupation'] ?? '' }}" {{ $loop->index < 2 ? 'required' : '' }} {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="fam_employer_or_school[]" value="{{ $row['employer_or_school'] ?? '' }}" {{ $loop->index < 2 ? 'required' : '' }} {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="fam_income[]" value="{{ $row['monthly_income'] ?? '' }}" {{ $loop->index < 2 ? 'required' : '' }} {{ $locked ? 'readonly' : '' }}></td>
                 @unless ($locked)<td><button type="button" class="btn btn--sm btn--outline row-remove">&times;</button></td>@endunless
               </tr>
             @endforeach

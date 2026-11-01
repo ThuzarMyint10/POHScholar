@@ -10,7 +10,7 @@
 @endif
 
 <div class="form-card">
-  <form method="post" action="{{ route('student.academic_record.update') }}" novalidate>
+  <form method="post" action="{{ route('student.academic_record.update') }}" ">
     @csrf
     @method('PUT')
     <fieldset {{ $locked ? 'disabled' : '' }}>
@@ -20,11 +20,11 @@
       <div class="form-row">
         <div class="form-group">
           <label for="secondary_school">Secondary School for GCE 'O' Level</label>
-          <input type="text" id="secondary_school" name="secondary_school" value="{{ old('secondary_school', $student->secondary_school) }}" {{ $locked ? 'readonly' : '' }}>
+          <input type="text" id="secondary_school" name="secondary_school" value="{{ old('secondary_school', $student->secondary_school) }}" required {{ $locked ? 'readonly' : '' }}>
         </div>
         <div class="form-group">
           <label for="al_college">College for GCE 'A' Level</label>
-          <input type="text" id="al_college" name="al_college" value="{{ old('al_college', $student->al_college) }}" {{ $locked ? 'readonly' : '' }}>
+          <input type="text" id="al_college" name="al_college" value="{{ old('al_college', $student->al_college) }}" required {{ $locked ? 'readonly' : '' }}>
         </div>
       </div>
 
@@ -37,28 +37,28 @@
           <tbody>
             <tr>
               <th>GCE 'O' Level</th>
-              <td><input type="number" min="0" name="ol_grade_a" value="{{ old('ol_grade_a', $student->ol_grade_a) }}" style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
-              <td><input type="number" min="0" name="ol_grade_b" value="{{ old('ol_grade_b', $student->ol_grade_b) }}" style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
-              <td><input type="number" min="0" name="ol_grade_c" value="{{ old('ol_grade_c', $student->ol_grade_c) }}" style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
-              <td><input type="number" min="0" name="ol_grade_s" value="{{ old('ol_grade_s', $student->ol_grade_s) }}" style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
-              <td><input type="number" min="0" name="ol_grade_wf" value="{{ old('ol_grade_wf', $student->ol_grade_wf) }}" style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
-              <td><input type="text" name="ol_national_ranking" value="{{ old('ol_national_ranking', $student->ol_national_ranking) }}" placeholder="O' Level National Ranking" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="number" min="0" name="ol_grade_a" value="{{ old('ol_grade_a', $student->ol_grade_a) }}" required style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="number" min="0" name="ol_grade_b" value="{{ old('ol_grade_b', $student->ol_grade_b) }}" required style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="number" min="0" name="ol_grade_c" value="{{ old('ol_grade_c', $student->ol_grade_c) }}" required style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="number" min="0" name="ol_grade_s" value="{{ old('ol_grade_s', $student->ol_grade_s) }}" required style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="number" min="0" name="ol_grade_wf" value="{{ old('ol_grade_wf', $student->ol_grade_wf) }}" required style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="text" name="ol_national_ranking" value="{{ old('ol_national_ranking', $student->ol_national_ranking) }}" placeholder="O' Level National Ranking" required {{ $locked ? 'readonly' : '' }}></td>
             </tr>
             <tr>
               <th>GCE 'A' Level</th>
-              <td><input type="number" min="0" name="al_grade_a" value="{{ old('al_grade_a', $student->al_grade_a) }}" style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
-              <td><input type="number" min="0" name="al_grade_b" value="{{ old('al_grade_b', $student->al_grade_b) }}" style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
-              <td><input type="number" min="0" name="al_grade_c" value="{{ old('al_grade_c', $student->al_grade_c) }}" style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
-              <td><input type="number" min="0" name="al_grade_s" value="{{ old('al_grade_s', $student->al_grade_s) }}" style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
-              <td><input type="number" min="0" name="al_grade_wf" value="{{ old('al_grade_wf', $student->al_grade_wf) }}" style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
-              <td><input type="text" name="al_zscore" value="{{ old('al_zscore', $student->al_zscore) }}" placeholder="A' Level Z-Score" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="number" min="0" name="al_grade_a" value="{{ old('al_grade_a', $student->al_grade_a) }}" required style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="number" min="0" name="al_grade_b" value="{{ old('al_grade_b', $student->al_grade_b) }}" required style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="number" min="0" name="al_grade_c" value="{{ old('al_grade_c', $student->al_grade_c) }}" required style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="number" min="0" name="al_grade_s" value="{{ old('al_grade_s', $student->al_grade_s) }}" required style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="number" min="0" name="al_grade_wf" value="{{ old('al_grade_wf', $student->al_grade_wf) }}" required style="width:60px;" {{ $locked ? 'readonly' : '' }}></td>
+              <td><input type="text" name="al_zscore" value="{{ old('al_zscore', $student->al_zscore) }}" placeholder="A' Level Z-Score" required {{ $locked ? 'readonly' : '' }}></td>
             </tr>
           </tbody>
         </table>
       </div>
       <div class="form-group" style="margin-top:12px;">
         <label for="al_national_ranking">A' Level National Ranking by Stream</label>
-        <input type="text" id="al_national_ranking" name="al_national_ranking" value="{{ old('al_national_ranking', $student->al_national_ranking) }}" {{ $locked ? 'readonly' : '' }}>
+        <input type="text" id="al_national_ranking" name="al_national_ranking" value="{{ old('al_national_ranking', $student->al_national_ranking) }}" required {{ $locked ? 'readonly' : '' }}>
       </div>
     </fieldset>
 

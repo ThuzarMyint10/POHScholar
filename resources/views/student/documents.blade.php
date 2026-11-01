@@ -4,7 +4,7 @@
 <span class="eyebrow">Step 3</span>
 <h1>Certificates &amp; Documents</h1>
 <p style="color:var(--ink-soft); margin-bottom:10px;">
-  Attach copies of your certificates, academic transcripts, or any other supporting documents. PDF files only, up to {{ $maxDocuments }} documents.
+  Attach at least one copy of your certificates, academic transcripts, or supporting documents. This section is mandatory; PDF files only, up to {{ $maxDocuments }} documents.
 </p>
 
 @if ($locked)

@@ -10,7 +10,7 @@
 @endif
 
 <div class="form-card">
-  <form method="post" action="{{ route('student.profile.update') }}" enctype="multipart/form-data" novalidate>
+  <form method="post" action="{{ route('student.profile.update') }}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <fieldset {{ $locked ? 'disabled' : '' }}>
@@ -33,7 +33,7 @@
       <div class="form-row">
         <div class="form-group">
           <label for="undergraduate_course">Undergraduate Course</label>
-          <input type="text" id="undergraduate_course" name="undergraduate_course" value="{{ old('undergraduate_course', $student->undergraduate_course) }}" placeholder="e.g. BSc in Computer Science" {{ $locked ? 'readonly' : '' }}>
+          <input type="text" id="undergraduate_course" name="undergraduate_course" value="{{ old('undergraduate_course', $student->undergraduate_course) }}" placeholder="e.g. BSc in Computer Science" required {{ $locked ? 'readonly' : '' }}>
         </div>
         <div class="form-group required">
           <label for="institution_select">Institution</label>
@@ -155,12 +155,12 @@
         </div>
         <div class="form-group">
           <label for="guardian_occupation">Parent / Guardian Occupation</label>
-          <input type="text" id="guardian_occupation" name="guardian_occupation" value="{{ old('guardian_occupation', $student->guardian_occupation) }}" {{ $locked ? 'readonly' : '' }}>
+          <input type="text" id="guardian_occupation" name="guardian_occupation" value="{{ old('guardian_occupation', $student->guardian_occupation) }}" required {{ $locked ? 'readonly' : '' }}>
         </div>
       </div>
       <div class="form-group">
         <label for="household_income_band">Approximate Monthly Household Income</label>
-        <select id="household_income_band" name="household_income_band" {{ $locked ? 'disabled' : '' }}>
+        <select id="household_income_band" name="household_income_band" required {{ $locked ? 'disabled' : '' }}>
           <option value="">Prefer not to say</option>
           @foreach ($incomeBands as $band)
             @if ($band !== 'Prefer not to say')

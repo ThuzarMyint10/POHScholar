@@ -62,6 +62,24 @@ class ActivitiesController extends Controller
             $tag($leadership, 'leadership')
         );
 
+        if (count($allCocurricular) === 0) {
+            return back()->withInput()->withErrors(['activities' => 'Please enter at least one complete co-curricular activity, sport, or leadership activity.']);
+        }
+        foreach ($allCocurricular as $activity) {
+            foreach (['period', 'detail', 'level_role'] as $field) {
+                if (! filled($activity[$field] ?? null)) {
+                    return back()->withInput()->withErrors(['activities' => 'Complete all fields for every entered activity row, or remove the incomplete row.']);
+                }
+            }
+        }
+        foreach ($workExperience as $record) {
+            foreach (['period', 'description', 'org_position'] as $field) {
+                if (! filled($record[$field] ?? null)) {
+                    return back()->withInput()->withErrors(['work_experience' => 'If work experience is entered, complete all work experience fields or remove the row.']);
+                }
+            }
+        }
+
         $student->forceFill([
             'cocurricular_activities' => $allCocurricular,
             'work_experience' => $workExperience,

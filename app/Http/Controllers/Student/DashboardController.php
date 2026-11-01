@@ -21,7 +21,7 @@ class DashboardController extends Controller
         $docCount = $student->documents()->count();
 
         $profileComplete = $student->profileComplete();
-        $essayComplete = filled(trim((string) $student->essay));
+        $essayComplete = str_word_count(trim((string) $student->essay)) >= 100;
         $documentsPresent = $docCount > 0;
         $academicRecordComplete = $student->academicRecordComplete();
         $familyBackgroundPresent = $student->familyBackgroundComplete();

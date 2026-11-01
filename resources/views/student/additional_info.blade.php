@@ -10,7 +10,7 @@
 @endif
 
 <div class="form-card">
-  <form method="post" action="{{ route('student.additional_info.update') }}" novalidate>
+  <form method="post" action="{{ route('student.additional_info.update') }}" ">
     @csrf
     @method('PUT')
     <fieldset {{ $locked ? 'disabled' : '' }}>
@@ -21,7 +21,7 @@
       <div class="form-group">
         <label>Have you previously applied for a scholarship or sponsorship with any organisation or institution, whether public or private?</label>
         <div style="display:flex; gap:20px; margin:6px 0;">
-          <label style="font-weight:400;"><input type="radio" name="prev_scholarship_flag" value="1" {{ (string) old('prev_scholarship_flag', $student->prev_scholarship_flag) === '1' ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}> Yes</label>
+          <label style="font-weight:400;"><input type="radio" name="prev_scholarship_flag" value="1" required {{ (string) old('prev_scholarship_flag', $student->prev_scholarship_flag) === '1' ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}> Yes</label>
           <label style="font-weight:400;"><input type="radio" name="prev_scholarship_flag" value="0" {{ (string) old('prev_scholarship_flag', $student->prev_scholarship_flag) === '0' ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}> No</label>
         </div>
         <div id="prevScholarshipDetails" style="{{ (string) old('prev_scholarship_flag', $student->prev_scholarship_flag) === '1' ? '' : 'display:none;' }}">
@@ -32,7 +32,7 @@
       <div class="form-group">
         <label>Have you ever suffered, or are you suffering, from any physical impairment or disease?</label>
         <div style="display:flex; gap:20px; margin:6px 0;">
-          <label style="font-weight:400;"><input type="radio" name="health_condition_flag" value="1" {{ (string) old('health_condition_flag', $student->health_condition_flag) === '1' ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}> Yes</label>
+          <label style="font-weight:400;"><input type="radio" name="health_condition_flag" value="1" required {{ (string) old('health_condition_flag', $student->health_condition_flag) === '1' ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}> Yes</label>
           <label style="font-weight:400;"><input type="radio" name="health_condition_flag" value="0" {{ (string) old('health_condition_flag', $student->health_condition_flag) === '0' ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}> No</label>
         </div>
         <div id="healthDetails" style="{{ (string) old('health_condition_flag', $student->health_condition_flag) === '1' ? '' : 'display:none;' }}">
@@ -43,7 +43,7 @@
       <div class="form-group">
         <label>Have you ever been charged in a court of law in any country?</label>
         <div style="display:flex; gap:20px; margin:6px 0;">
-          <label style="font-weight:400;"><input type="radio" name="legal_charge_flag" value="1" {{ (string) old('legal_charge_flag', $student->legal_charge_flag) === '1' ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}> Yes</label>
+          <label style="font-weight:400;"><input type="radio" name="legal_charge_flag" value="1" required {{ (string) old('legal_charge_flag', $student->legal_charge_flag) === '1' ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}> Yes</label>
           <label style="font-weight:400;"><input type="radio" name="legal_charge_flag" value="0" {{ (string) old('legal_charge_flag', $student->legal_charge_flag) === '0' ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}> No</label>
         </div>
         <div id="legalDetails" style="{{ (string) old('legal_charge_flag', $student->legal_charge_flag) === '1' ? '' : 'display:none;' }}">
@@ -61,11 +61,11 @@
           <tbody>
             @foreach ($referees as $row)
               <tr>
-                <td><input type="text" name="ref_name[]" value="{{ $row['name'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
-                <td><input type="text" name="ref_address[]" value="{{ $row['address'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
-                <td><input type="text" name="ref_occupation[]" value="{{ $row['occupation'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
-                <td><input type="tel" name="ref_telephone[]" inputmode="numeric" pattern="[0-9]*" maxlength="15" data-digits-only value="{{ $row['telephone'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
-                <td><input type="text" name="ref_years_known[]" value="{{ $row['years_known'] ?? '' }}" {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="ref_name[]" value="{{ $row['name'] ?? '' }}" required {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="ref_address[]" value="{{ $row['address'] ?? '' }}" required {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="ref_occupation[]" value="{{ $row['occupation'] ?? '' }}" required {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="tel" name="ref_telephone[]" inputmode="numeric" pattern="[0-9]*" maxlength="15" data-digits-only value="{{ $row['telephone'] ?? '' }}" required {{ $locked ? 'readonly' : '' }}></td>
+                <td><input type="text" name="ref_years_known[]" value="{{ $row['years_known'] ?? '' }}" required {{ $locked ? 'readonly' : '' }}></td>
               </tr>
             @endforeach
           </tbody>
@@ -83,16 +83,16 @@
       <div class="form-row">
         <div class="form-group required">
           <label for="declaration_signature">Signature (type your full name)</label>
-          <input type="text" id="declaration_signature" name="declaration_signature" value="{{ old('declaration_signature', $student->declaration_signature) }}" {{ $locked ? 'readonly' : '' }}>
+          <input type="text" id="declaration_signature" name="declaration_signature" required value="{{ old('declaration_signature', $student->declaration_signature) }}" {{ $locked ? 'readonly' : '' }}>
         </div>
         <div class="form-group required">
           <label for="declaration_date">Date</label>
-          <input type="date" id="declaration_date" name="declaration_date" value="{{ old('declaration_date', optional($student->declaration_date)->format('Y-m-d') ?: date('Y-m-d')) }}" {{ $locked ? 'readonly' : '' }}>
+          <input type="date" id="declaration_date" name="declaration_date" required value="{{ old('declaration_date', optional($student->declaration_date)->format('Y-m-d') ?: date('Y-m-d')) }}" {{ $locked ? 'readonly' : '' }}>
         </div>
       </div>
       <div class="form-group">
         <label style="font-weight:400; display:flex; gap:8px; align-items:flex-start;">
-          <input type="checkbox" name="declaration_agreed" value="1" style="margin-top:4px;" {{ old('declaration_agreed', $student->declaration_agreed) ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}>
+          <input type="checkbox" name="declaration_agreed" value="1" required style="margin-top:4px;" {{ old('declaration_agreed', $student->declaration_agreed) ? 'checked' : '' }} {{ $locked ? 'disabled' : '' }}>
           <span>I agree to the declaration above. I understand this must be checked before my application can be submitted.</span>
         </label>
       </div>
