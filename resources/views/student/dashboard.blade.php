@@ -89,8 +89,8 @@ $statusClass = ['Draft' => 'draft', 'Submitted' => 'submitted', 'Under Review' =
         </div>
         <a href="{{ route('student.family_background.edit') }}" class="btn btn--sm btn--outline">{{ $familyBackgroundPresent ? 'Review' : 'Complete' }}</a>
       </li>
-      <li>
-        <span class="step-icon">4</span>
+      <li class="{{ $activitiesComplete ? 'is-done' : '' }}">
+        <span class="step-icon">{{ $activitiesComplete ? '✓' : '4' }}</span>
         <div class="step-text">
           <strong>Activities &amp; Experience</strong>
           <span>Co-curricular activities, sports, leadership, and work experience.</span>
@@ -127,7 +127,7 @@ $statusClass = ['Draft' => 'draft', 'Submitted' => 'submitted', 'Under Review' =
       <form method="post" action="{{ route('student.submit') }}" style="margin-top:10px;">
         @csrf
         @unless ($canSubmit)
-          <p style="color:var(--ink-soft); font-size:0.9rem;">Complete your profile, essay and declaration above before submitting.</p>
+          <p style="color:var(--ink-soft); font-size:0.9rem;">Complete every checklist section above before submitting.</p>
         @endunless
         <button type="submit" class="btn btn--block" {{ $canSubmit ? '' : 'disabled' }}>Submit My Application</button>
       </form>

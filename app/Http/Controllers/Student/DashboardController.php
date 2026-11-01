@@ -20,16 +20,15 @@ class DashboardController extends Controller
 
         $docCount = $student->documents()->count();
 
-        $profileComplete = filled($student->full_name) && filled($student->date_of_birth) && filled($student->gender)
-            && filled($student->address) && filled($student->district) && filled($student->country) && filled($student->phone)
-            && filled($student->school_or_institute) && filled($student->guardian_name) && filled($student->photo);
+        $profileComplete = $student->profileComplete();
         $essayComplete = filled(trim((string) $student->essay));
         $documentsPresent = $docCount > 0;
-        $academicRecordComplete = filled($student->secondary_school) || filled($student->al_college);
-        $familyBackgroundPresent = filled($student->family_members);
-        $declarationComplete = (bool) $student->declaration_agreed && filled($student->declaration_signature);
+        $academicRecordComplete = $student->academicRecordComplete();
+        $familyBackgroundPresent = $student->familyBackgroundComplete();
+        $activitiesComplete = $student->activitiesComplete();
+        $declarationComplete = $student->declarationComplete();
 
-        $canSubmit = $profileComplete && $essayComplete && $declarationComplete && $student->status === 'Draft';
+        $canSubmit = $student->missingSubmissionSections() === [] && $student->status === 'Draft';
 
         $openPeriod = null;
         if ($student->accepted_at) {
@@ -46,6 +45,7 @@ class DashboardController extends Controller
             'documentsPresent' => $documentsPresent,
             'academicRecordComplete' => $academicRecordComplete,
             'familyBackgroundPresent' => $familyBackgroundPresent,
+            'activitiesComplete' => $activitiesComplete,
             'declarationComplete' => $declarationComplete,
             'canSubmit' => $canSubmit,
             'openPeriod' => $openPeriod,
@@ -61,15 +61,10 @@ class DashboardController extends Controller
             return redirect()->route('student.dashboard')->with('info', 'Your application has already been submitted.');
         }
 
-        $profileComplete = filled($student->full_name) && filled($student->date_of_birth) && filled($student->gender)
-            && filled($student->address) && filled($student->district) && filled($student->country) && filled($student->phone)
-            && filled($student->school_or_institute) && filled($student->guardian_name) && filled($student->photo);
-        $essayComplete = filled(trim((string) $student->essay));
-        $declarationComplete = (bool) $student->declaration_agreed && filled($student->declaration_signature);
-
-        if (! $profileComplete || ! $essayComplete || ! $declarationComplete) {
+        $missingSections = $student->missingSubmissionSections();
+        if ($missingSections !== []) {
             return redirect()->route('student.dashboard')
-                ->with('error', 'Please complete your profile, essay and the declaration before submitting.');
+                ->with('error', 'Before submitting, complete: '.implode(', ', $missingSections).'.');
         }
 
         $applicationNumber = ApplicationNumberGenerator::next($student->id);

@@ -56,6 +56,7 @@ return [
         'api_key' => env('ANTHROPIC_API_KEY'),
         'model' => env('ANTHROPIC_MODEL', 'claude-sonnet-4-5'),
         'workspace_id' => env('ANTHROPIC_WORKSPACE_ID'),
+        'ca_bundle' => env('ANTHROPIC_CA_BUNDLE', storage_path('certs/cacert.pem')),
     ],
 
 ];

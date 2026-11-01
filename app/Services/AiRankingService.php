@@ -22,7 +22,16 @@ class AiRankingService
             throw new RuntimeException('ANTHROPIC_API_KEY is not configured in .env.');
         }
 
-        $response = Http::withHeaders([
+        $caBundle = trim((string) config('services.anthropic.ca_bundle'));
+        if ($caBundle === '') {
+            $caBundle = storage_path('certs/cacert.pem');
+        }
+        $http = Http::withOptions([
+            'verify' => is_file($caBundle) ? $caBundle : true,
+        ]);
+
+        try {
+            $response = $http->withHeaders([
             'x-api-key' => $apiKey,
             'anthropic-version' => '2023-06-01',
             'content-type' => 'application/json',
@@ -36,6 +45,9 @@ class AiRankingService
                 'content' => $this->buildPrompt($student),
             ]],
         ]);
+        } catch (\Illuminate\Http\Client\ConnectionException $e) {
+            throw new RuntimeException('Could not connect securely to Anthropic: '.$this->tlsMessage($e->getMessage()));
+        }
 
         if ($response->failed()) {
             throw new RuntimeException('Anthropic API request failed: '.$response->status().' '.$response->body());
@@ -103,6 +115,15 @@ class AiRankingService
         ];
 
         return "Evaluate this scholarship application using only the information below. Do not penalize missing information.\n\n".json_encode($fields, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    }
+
+    private function tlsMessage(string $message): string
+    {
+        if (str_contains($message, 'SSL certificate') || str_contains($message, 'cURL error 60')) {
+            return 'SSL certificate verification failed. Verify the date/time, proxy certificates, and ANTHROPIC_CA_BUNDLE setting.';
+        }
+
+        return 'Check network, proxy, firewall, and Anthropic API availability.';
     }
 
     private function parseJson(string $text): array
