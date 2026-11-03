@@ -84,4 +84,11 @@ document.addEventListener('DOMContentLoaded', function () {
       if (input.value !== original) showToast(fieldLabel(input) + ' accepts numbers only.', input);
     });
   });
+
+  document.querySelectorAll('[data-incomplete-submit]').forEach(function (button) {
+    button.addEventListener('click', function (event) {
+      event.preventDefault();
+      showToast('Complete every checklist section above before submitting.', button);
+    });
+  });
 });
