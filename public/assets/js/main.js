@@ -20,6 +20,22 @@ document.addEventListener('DOMContentLoaded', function () {
       if (input) input.insertAdjacentElement('afterend', toast);
       else document.body.appendChild(toast);
     }
+    if (input && input.hasAttribute('data-incomplete-submit')) {
+      toast.classList.add('submission-toast');
+      var buttonRect = input.getBoundingClientRect();
+      var toastWidth = Math.min(360, window.innerWidth - 24);
+      toast.style.width = toastWidth + 'px';
+      toast.style.left = Math.min(
+        Math.max(buttonRect.left + (buttonRect.width / 2), toastWidth / 2 + 12),
+        window.innerWidth - toastWidth / 2 - 12
+      ) + 'px';
+      toast.style.top = Math.max(buttonRect.top - 8, 12) + 'px';
+    } else {
+      toast.classList.remove('submission-toast');
+      toast.style.removeProperty('width');
+      toast.style.removeProperty('left');
+      toast.style.removeProperty('top');
+    }
     toast.textContent = message;
     toast.classList.add('is-visible');
     window.clearTimeout(toastTimer);

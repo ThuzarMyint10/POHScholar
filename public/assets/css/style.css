@@ -45,6 +45,20 @@
 }
 .form-toast.is-visible { opacity: 1; transform: translateY(0); }
 
+.submission-toast {
+  position: fixed;
+  z-index: 1000;
+  max-width: calc(100vw - 24px);
+  margin: 0;
+  text-align: center;
+  transform: translate(-50%, calc(-100% - 2px));
+  pointer-events: none;
+}
+
+.submission-toast.is-visible {
+  transform: translate(-50%, calc(-100% - 2px));
+}
+
 html { scroll-behavior: smooth; }
 
 body {
