@@ -9,6 +9,7 @@ use App\Models\NewsEvent;
 use App\Models\Program;
 use App\Models\QuickApplication;
 use App\Models\Scholar;
+use App\Models\Student;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -75,7 +76,7 @@ class PageController extends Controller
             'full_name' => ['required', 'string', 'max:200'],
             'date_of_birth' => ['required', 'date'],
             'gender' => ['required', 'in:Male,Female,Other'],
-            'nic_or_birth_cert' => ['nullable', 'string', 'max:60'],
+            'nic_or_birth_cert' => ['required', 'string', 'max:60'],
             'address' => ['required', 'string', 'max:400'],
             'district' => [
                 'required', 'string', 'max:100',
@@ -94,6 +95,21 @@ class PageController extends Controller
             'household_income_band' => ['nullable', 'string'],
             'reason_for_applying' => ['required', 'string'],
         ]);
+
+        $nicOrBirthCert = strtoupper(trim($data['nic_or_birth_cert']));
+        $duplicateStudent = Student::query()
+            ->whereRaw('UPPER(TRIM(nic_or_birth_cert)) = ?', [$nicOrBirthCert])
+            ->exists();
+        $duplicateQuickApplication = QuickApplication::query()
+            ->whereRaw('UPPER(TRIM(nic_or_birth_cert)) = ?', [$nicOrBirthCert])
+            ->exists();
+        if ($duplicateStudent || $duplicateQuickApplication) {
+            return back()->withInput()->withErrors([
+                'nic_or_birth_cert' => 'NRIC number cannot be the same as another application.',
+            ]);
+        }
+
+        $data['nic_or_birth_cert'] = $nicOrBirthCert;
 
         // No email is sent here - same as the original quick-apply form,
         // which simply records the submission for admin review under

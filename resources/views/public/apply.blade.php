@@ -69,9 +69,10 @@
                 @endforeach
               </select>
             </div>
-            <div class="form-group">
+            <div class="form-group required">
               <label for="nic_or_birth_cert">NIC / Birth Certificate No.</label>
-              <input type="text" id="nic_or_birth_cert" name="nic_or_birth_cert" value="{{ $old['nic_or_birth_cert'] ?? '' }}">
+              <input type="text" id="nic_or_birth_cert" name="nic_or_birth_cert" value="{{ $old['nic_or_birth_cert'] ?? '' }}" required>
+              <div class="hint">Each applicant must use a unique NIC / FIN number.</div>
             </div>
           </div>
           <div class="form-group required">

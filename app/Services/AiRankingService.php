@@ -50,7 +50,15 @@ class AiRankingService
         }
 
         if ($response->failed()) {
-            throw new RuntimeException('Anthropic API request failed: '.$response->status().' '.$response->body());
+            $status = $response->status();
+            if ($status === 401) {
+                throw new RuntimeException('Anthropic authentication failed (401). Create a new API key in Anthropic Console, replace ANTHROPIC_API_KEY in .env, then run php artisan config:clear.');
+            }
+            if ($status === 403) {
+                throw new RuntimeException('Anthropic access was forbidden (403). Check that the API key belongs to an active organization/workspace, the account has API credits, and the configured model is available.');
+            }
+
+            throw new RuntimeException('Anthropic API request failed: '.$status.' '.$response->body());
         }
 
         $text = collect((array) $response->json('content', []))

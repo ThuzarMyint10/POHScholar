@@ -75,6 +75,7 @@
         <div class="form-group required">
           <label for="nic_or_birth_cert">NIC / Fin No.</label>
           <input type="text" id="nic_or_birth_cert" name="nic_or_birth_cert" value="{{ old('nic_or_birth_cert', $student->nic_or_birth_cert) }}" required {{ $locked ? 'readonly' : '' }}>
+          <div class="hint">Each applicant must use a unique NIC / FIN number.</div>
         </div>
       </div>
       <div class="form-row">

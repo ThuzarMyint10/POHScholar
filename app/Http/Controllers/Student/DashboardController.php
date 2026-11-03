@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Student;
 
 use App\Http\Controllers\Controller;
 use App\Models\AcademicResult;
+use App\Models\QuickApplication;
 use App\Models\Student;
 use App\Support\ApplicationNumberGenerator;
 use Illuminate\Http\RedirectResponse;
@@ -65,6 +66,19 @@ class DashboardController extends Controller
         if ($missingSections !== []) {
             return redirect()->route('student.dashboard')
                 ->with('error', 'Before submitting, complete: '.implode(', ', $missingSections).'.');
+        }
+
+        $nicOrBirthCert = strtoupper(trim((string) $student->nic_or_birth_cert));
+        $duplicateStudent = Student::query()
+            ->where('id', '!=', $student->id)
+            ->whereRaw('UPPER(TRIM(nic_or_birth_cert)) = ?', [$nicOrBirthCert])
+            ->exists();
+        $duplicateQuickApplication = QuickApplication::query()
+            ->whereRaw('UPPER(TRIM(nic_or_birth_cert)) = ?', [$nicOrBirthCert])
+            ->exists();
+        if ($duplicateStudent || $duplicateQuickApplication) {
+            return redirect()->route('student.profile.edit')
+                ->withErrors(['nic_or_birth_cert' => 'NRIC number cannot be the same as another application.']);
         }
 
         $applicationNumber = ApplicationNumberGenerator::next($student->id);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Student;
 use App\Http\Controllers\Controller;
 use App\Models\Country;
 use App\Models\Program;
+use App\Models\QuickApplication;
 use App\Models\Student;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -68,7 +69,12 @@ class ProfileController extends Controller
             'full_name' => ['required', 'string', 'max:200'],
             'date_of_birth' => ['required', 'date'],
             'gender' => ['required', 'in:Male,Female,Other'],
-            'nic_or_birth_cert' => ['required', 'string', 'max:60'],
+            'nic_or_birth_cert' => [
+                'required',
+                'string',
+                'max:60',
+                Rule::unique('students', 'nic_or_birth_cert')->ignore($student->id),
+            ],
             'citizenship' => ['required', 'string', 'max:100'],
             'ethnic_group' => ['nullable', 'string', 'max:100'],
             'ethnic_group_other' => ['nullable', 'string', 'max:100'],
@@ -93,6 +99,20 @@ class ProfileController extends Controller
             'program_id' => ['nullable', 'exists:programs,id'],
             'photo' => ['nullable', 'image', 'mimes:jpeg,jpg,png,webp', 'max:4096'],
         ]);
+
+        $nicOrBirthCert = strtoupper(trim($data['nic_or_birth_cert']));
+        $duplicateStudent = Student::query()
+            ->where('id', '!=', $student->id)
+            ->whereRaw('UPPER(TRIM(nic_or_birth_cert)) = ?', [$nicOrBirthCert])
+            ->exists();
+        $duplicateQuickApplication = QuickApplication::query()
+            ->whereRaw('UPPER(TRIM(nic_or_birth_cert)) = ?', [$nicOrBirthCert])
+            ->exists();
+        if ($duplicateStudent || $duplicateQuickApplication) {
+            return back()->withInput()->withErrors([
+                'nic_or_birth_cert' => 'NRIC number cannot be the same as another application.',
+            ]);
+        }
 
         $ethnicGroupValue = $data['ethnic_group'] === 'Other' && filled($data['ethnic_group_other'] ?? null)
             ? $data['ethnic_group_other'] : $data['ethnic_group'];
@@ -119,7 +139,7 @@ class ProfileController extends Controller
             'undergraduate_course' => $data['undergraduate_course'] ?: null,
             'date_of_birth' => $data['date_of_birth'],
             'gender' => $data['gender'],
-            'nic_or_birth_cert' => $data['nic_or_birth_cert'],
+            'nic_or_birth_cert' => $nicOrBirthCert,
             'citizenship' => $data['citizenship'],
             'ethnic_group' => $ethnicGroupValue ?: null,
             'religion' => $data['religion'] ?: null,

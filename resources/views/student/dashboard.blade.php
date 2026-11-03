@@ -95,7 +95,7 @@ $statusClass = ['Draft' => 'draft', 'Submitted' => 'submitted', 'Under Review' =
           <strong>Activities &amp; Experience</strong>
           <span>Co-curricular activities, sports, leadership, and work experience.</span>
         </div>
-        <a href="{{ route('student.activities.edit') }}" class="btn btn--sm btn--outline">Review</a>
+        <a href="{{ route('student.activities.edit') }}" class="btn btn--sm btn--outline">{{ $activitiesComplete ? 'Review' : 'Complete' }}</a>
       </li>
       <li class="{{ $essayComplete ? 'is-done' : '' }}">
         <span class="step-icon">{{ $essayComplete ? '✓' : '5' }}</span>
@@ -109,7 +109,7 @@ $statusClass = ['Draft' => 'draft', 'Submitted' => 'submitted', 'Under Review' =
         <span class="step-icon">{{ $documentsPresent ? '✓' : '6' }}</span>
         <div class="step-text">
           <strong>Upload Certificates</strong>
-          <span>{{ $docCount }} of {{ config('poh.max_student_documents') }} document(s) attached (PDF only, optional but recommended).</span>
+          <span>{{ $docCount }} of {{ config('poh.max_student_documents') }} required certificate/supporting document(s) attached (PDF only).</span>
         </div>
         <a href="{{ route('student.documents.index') }}" class="btn btn--sm btn--outline">Manage</a>
       </li>
@@ -127,7 +127,7 @@ $statusClass = ['Draft' => 'draft', 'Submitted' => 'submitted', 'Under Review' =
       <form method="post" action="{{ route('student.submit') }}" style="margin-top:10px;">
         @csrf
         @unless ($canSubmit)
-          <p style="color:var(--ink-soft); font-size:0.9rem;">Complete every checklist section above before submitting.</p>
+          <p style="color:var(--ink-soft); font-size:0.9rem;">All must be completed in order to submit.</p>
         @endunless
         <button type="submit" class="btn btn--block" {{ $canSubmit ? '' : 'disabled' }}>Submit My Application</button>
       </form>
