@@ -104,7 +104,16 @@ document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-incomplete-submit]').forEach(function (button) {
     button.addEventListener('click', function (event) {
       event.preventDefault();
-      showToast('Complete every checklist section above before submitting.', button);
+      var wrap = button.closest('.submit-button-wrap');
+      var toast = wrap ? wrap.querySelector('[data-submit-toast]') : null;
+      if (!toast) return;
+
+      toast.textContent = 'Complete every checklist section above before submitting.';
+      toast.classList.add('is-visible');
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(function () {
+        toast.classList.remove('is-visible');
+      }, 3600);
     });
   });
 });

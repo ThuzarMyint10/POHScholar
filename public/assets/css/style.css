@@ -59,6 +59,39 @@
   transform: translate(-50%, calc(-100% - 2px));
 }
 
+.submit-button-wrap {
+  position: relative;
+}
+
+.submit-toast {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 10px);
+  z-index: 1000;
+  width: min(360px, calc(100vw - 24px));
+  padding: 9px 12px;
+  border: 1px solid #d7a4aa;
+  border-left: 4px solid var(--maroon);
+  border-radius: var(--radius);
+  background: var(--white);
+  box-shadow: var(--shadow-lg);
+  color: var(--ink);
+  font-size: 0.88rem;
+  line-height: 1.4;
+  text-align: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translate(-50%, 5px);
+  transition: opacity 160ms ease, transform 160ms ease, visibility 160ms;
+  pointer-events: none;
+}
+
+.submit-toast.is-visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translate(-50%, 0);
+}
+
 html { scroll-behavior: smooth; }
 
 body {

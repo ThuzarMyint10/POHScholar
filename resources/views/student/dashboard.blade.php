@@ -126,11 +126,16 @@ $statusClass = ['Draft' => 'draft', 'Submitted' => 'submitted', 'Under Review' =
     @if ($student->status === 'Draft')
       <form method="post" action="{{ route('student.submit') }}" style="margin-top:10px;">
         @csrf
-        <button type="submit"
-                class="btn btn--block"
-                {{ $canSubmit ? '' : 'aria-disabled="true" data-incomplete-submit' }}>
-          Submit My Application
-        </button>
+        <div class="submit-button-wrap">
+          <button type="submit"
+                  class="btn btn--block"
+                  {{ $canSubmit ? '' : 'aria-disabled="true" data-incomplete-submit' }}>
+            Submit My Application
+          </button>
+          @unless ($canSubmit)
+            <div class="submit-toast" data-submit-toast role="alert" aria-live="assertive"></div>
+          @endunless
+        </div>
       </form>
     @endif
   </div>

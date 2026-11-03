@@ -64,8 +64,7 @@ class DashboardController extends Controller
 
         $missingSections = $student->missingSubmissionSections();
         if ($missingSections !== []) {
-            return redirect()->route('student.dashboard')
-                ->with('error', 'Before submitting, complete: '.implode(', ', $missingSections).'.');
+            return redirect()->route('student.dashboard');
         }
 
         $nicOrBirthCert = strtoupper(trim((string) $student->nic_or_birth_cert));
