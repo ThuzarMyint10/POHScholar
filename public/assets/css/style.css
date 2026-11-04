@@ -255,24 +255,36 @@ p { margin: 0 0 1em; }
 
 .nav-toggle {
   display: none;
-  background: none;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 5px;
+  background: var(--cream);
   border: 1px solid var(--maroon);
   border-radius: 4px;
-  padding: 8px 10px;
+  padding: 0;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
-.nav-toggle span,
-.nav-toggle span::before,
-.nav-toggle span::after {
-  content: '';
+.nav-toggle span {
   display: block;
-  width: 20px;
+  width: 22px;
   height: 2px;
-  background: var(--maroon);
-  position: relative;
+  flex: 0 0 2px;
+  background-color: var(--maroon);
+  border-radius: 2px;
+  transition: transform 180ms ease, opacity 180ms ease;
 }
-.nav-toggle span::before { position: absolute; top: -6px; }
-.nav-toggle span::after { position: absolute; top: 6px; }
+.nav-toggle:focus-visible {
+  outline: 3px solid rgba(169, 131, 79, 0.5);
+  outline-offset: 2px;
+}
+.nav-toggle[aria-expanded="true"] span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* ---------- Hero ---------- */
 .hero {
@@ -634,7 +646,16 @@ table.data-table th { background: var(--pearl-deep); color: var(--maroon-dark); 
 
 @media (max-width: 720px) {
   .topbar { display: none; }
-  .nav-toggle { display: inline-flex; flex-direction: column; justify-content: center; }
+  .site-header .container { gap: 12px; }
+  .brand { min-width: 0; }
+  .brand img.brand-logo { max-width: calc(100vw - 104px); }
+  .nav-toggle {
+    display: inline-flex;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 51;
+    visibility: visible;
+  }
   .main-nav {
     position: absolute;
     top: 100%; left: 0; right: 0;

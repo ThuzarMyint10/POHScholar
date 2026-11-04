@@ -78,9 +78,28 @@ document.addEventListener('DOMContentLoaded', function () {
   var toggle = document.getElementById('navToggle');
   var nav = document.getElementById('mainNav');
   if (toggle && nav) {
-    toggle.addEventListener('click', function () {
-      var isOpen = nav.classList.toggle('is-open');
+    function setMenuOpen(isOpen) {
+      nav.classList.toggle('is-open', isOpen);
       toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      toggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+    }
+
+    toggle.addEventListener('click', function () {
+      setMenuOpen(toggle.getAttribute('aria-expanded') !== 'true');
+    });
+
+    nav.querySelectorAll('a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        setMenuOpen(false);
+      });
+    });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') setMenuOpen(false);
+    });
+
+    window.addEventListener('resize', function () {
+      if (window.innerWidth > 720) setMenuOpen(false);
     });
   }
 

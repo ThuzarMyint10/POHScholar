@@ -30,8 +30,10 @@
       <img src="{{ asset('assets/images/pohscholar.png') }}" alt="{{ config('app.name') }}" class="brand-logo">
     </a>
 
-    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false">
-      <span></span>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="Open navigation menu" aria-controls="mainNav" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
     </button>
 
     <nav class="main-nav" id="mainNav">
