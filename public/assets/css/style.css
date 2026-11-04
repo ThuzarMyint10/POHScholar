@@ -650,11 +650,12 @@ table.data-table th { background: var(--pearl-deep); color: var(--maroon-dark); 
   .brand { min-width: 0; }
   .brand img.brand-logo { max-width: calc(100vw - 104px); }
   .nav-toggle {
-    display: inline-flex;
+    display: inline-flex !important;
     flex-shrink: 0;
     position: relative;
     z-index: 51;
-    visibility: visible;
+    visibility: visible !important;
+    opacity: 1 !important;
   }
   .main-nav {
     position: absolute;

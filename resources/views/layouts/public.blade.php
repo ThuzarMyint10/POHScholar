@@ -8,7 +8,7 @@
 <link rel="icon" type="image/png" href="{{ asset('assets/images/header.png') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}?v={{ filemtime(public_path('assets/css/style.css')) }}">
 </head>
 <body>
 
@@ -91,6 +91,6 @@
     </div>
   </div>
 </footer>
-<script src="{{ asset('assets/js/main.js') }}"></script>
+<script src="{{ asset('assets/js/main.js') }}?v={{ filemtime(public_path('assets/js/main.js')) }}"></script>
 </body>
 </html>
